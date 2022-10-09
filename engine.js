@@ -49,6 +49,14 @@ module.exports = function(options) {
         return type + scope + ': ' + jiraWithDecorators + subject;
     }
   };
+
+  // Generate Jira issue prepend and append decorators
+  const decorateJiraIssue = function(jiraIssue, options) {
+    const prepend = options.jiraPrepend || ''
+    const append = options.jiraAppend || ''
+    return jiraIssue ? `${prepend}${jiraIssue}${append} `: '';
+  }
+
   var types = getFromOptionsOrDefaults('types');
 
   var length = longest(Object.keys(types)).length + 1;
@@ -155,15 +163,14 @@ module.exports = function(options) {
           default: options.defaultSubject,
           maxLength: maxHeaderWidth - (options.exclamationMark ? 1 : 0),
           leadingLabel: answers => {
-            const jira = answers.jira && options.jiraLocation !== 'post-body' ? ` ${answers.jira}` : '';
-
             let scope = '';
             const providedScope = getProvidedScope(answers);
             if (providedScope && providedScope !== 'none') {
               scope = `(${providedScope})`;
             }
 
-            return `${answers.type}${scope}:${jira}`;
+            const jiraWithDecorators = decorateJiraIssue(answers.jira, options);
+            return getJiraIssueLocation(options.jiraLocation, answers.type, scope, jiraWithDecorators, '').trim();
           },
           validate: input =>
             input.length >= minHeaderWidth ||
@@ -250,9 +257,7 @@ module.exports = function(options) {
         scope = addExclamationMark ? scope + '!' : scope;
 
         // Get Jira issue prepend and append decorators
-        var prepend = options.jiraPrepend || ''
-        var append = options.jiraAppend || ''
-        var jiraWithDecorators = answers.jira ? prepend + answers.jira + append + ' ': '';
+        const jiraWithDecorators = decorateJiraIssue(answers.jira, options);
 
         // Hard limit this line in the validate
         const head = getJiraIssueLocation(options.jiraLocation, answers.type, scope, jiraWithDecorators, answers.subject);
