@@ -4,6 +4,7 @@ module.exports = {
   types: conventionalCommitTypes,
   jiraMode: true,
   skipScope: true,
+  skipType: false,
   skipDescription: false,
   skipBreaking: false,
   customScope: false,

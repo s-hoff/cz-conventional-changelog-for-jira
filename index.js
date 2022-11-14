@@ -29,6 +29,11 @@ const options = {
     config.skipScope,
     defaults.skipScope
   ),
+  skipType: getEnvOrConfig(
+    process.env.CZ_SKIP_SCOPE,
+    config.skipScope,
+    defaults.skipScope
+  ),
   skipDescription: getEnvOrConfig(
     process.env.CZ_SKIP_DESCRIPTION,
     config.skipDescription,
