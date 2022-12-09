@@ -31,12 +31,18 @@ module.exports = function(options) {
   var getFromOptionsOrDefaults = function(key) {
     return options[key] || defaults[key];
   };
-  var getJiraIssueLocation = function(location, type, scope, jiraWithDecorators, subject) {
-    let headerPrefix = '';
-    if (type || scope) {
-      headerPrefix = `${type}${scope}: `;
+  var getJiraIssueLocation = function(
+    location,
+    type = '',
+    scope = '',
+    jiraWithDecorators,
+    subject
+  ) {
+    let headerPrefix = type + scope;
+    if (headerPrefix?.length > 0) {
+      headerPrefix += ': ';
     }
-    switch(location) {
+    switch (location) {
       case 'pre-type':
         return jiraWithDecorators + headerPrefix + subject;
         break;
