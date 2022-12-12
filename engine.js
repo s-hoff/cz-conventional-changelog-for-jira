@@ -39,7 +39,7 @@ module.exports = function(options) {
     subject
   ) {
     let headerPrefix = type + scope;
-    if (headerPrefix?.length > 0) {
+    if (headerPrefix !== '') {
       headerPrefix += ': ';
     }
     switch (location) {
