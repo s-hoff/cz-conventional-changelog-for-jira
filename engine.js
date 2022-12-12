@@ -31,22 +31,32 @@ module.exports = function(options) {
   var getFromOptionsOrDefaults = function(key) {
     return options[key] || defaults[key];
   };
-  var getJiraIssueLocation = function(location, type, scope, jiraWithDecorators, subject) {
-    switch(location) {
+  var getJiraIssueLocation = function(
+    location,
+    type = '',
+    scope = '',
+    jiraWithDecorators,
+    subject
+  ) {
+    let headerPrefix = type + scope;
+    if (headerPrefix !== '') {
+      headerPrefix += ': ';
+    }
+    switch (location) {
       case 'pre-type':
-        return jiraWithDecorators + type + scope + ': ' + subject;
+        return jiraWithDecorators + headerPrefix + subject;
         break;
       case 'pre-description':
-        return type + scope + ': ' + jiraWithDecorators + subject;
+        return headerPrefix + jiraWithDecorators + subject;
         break;
       case 'post-description':
-        return type + scope + ': ' + subject + ' ' + jiraWithDecorators;
+        return headerPrefix + subject + ' ' + jiraWithDecorators;
         break;
       case 'post-body':
-        return type + scope + ': ' + subject;
+        return headerPrefix + subject;
         break;
       default:
-        return type + scope + ': ' + jiraWithDecorators + subject;
+        return headerPrefix + jiraWithDecorators + subject;
     }
   };
 
@@ -112,9 +122,10 @@ module.exports = function(options) {
         {
           type: 'list',
           name: 'type',
+          when: !options.skipType,
           message: "Select the type of change that you're committing:",
           choices: choices,
-          default: options.defaultType
+          default: options.skipType ? '' : options.defaultType
         },
         {
           type: 'input',
